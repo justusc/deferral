@@ -31,10 +31,8 @@ set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 if(DEFERRAL_IS_SUBPROJECT)
-  return()
+  add_subdirectory(tests EXCLUDE_FROM_ALL)
 endif()
-
-add_subdirectory(tests EXCLUDE_FROM_ALL)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
