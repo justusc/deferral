@@ -388,17 +388,17 @@ DEFERRAL_VISIBILITY_HIDDEN inline DeferSuccess<funcT> operator+(DeferOnSuccess, 
 
 /**
  * @brief Capture code that shall be run when the current scope exits.
- * @def DEFER_N(name)
+ * @def DEFER_(name)
  *
- * The code within `DEFER_N`'s braces shall execute as if the code was in the
- * destructor of an object instantiated at the point of `DEFER_N`. A variable
- * name is required to be passed to `DEFER_N`, and creates a DeferExit object
+ * The code within `DEFER_`'s braces shall execute as if the code was in the
+ * destructor of an object instantiated at the point of `DEFER_`. A variable
+ * name is required to be passed to `DEFER_`, and creates a DeferExit object
  * with the specified name.
  *
  * If you need to skip the cleanup code, you can call `release()` on the
  * DeferExit object.
  *
- * Variables used within `DEFER_N` are captured by reference.
+ * Variables used within `DEFER_` are captured by reference.
  *
  * Example usage:
  * @code
@@ -407,7 +407,7 @@ DEFERRAL_VISIBILITY_HIDDEN inline DeferSuccess<funcT> operator+(DeferOnSuccess, 
  *   some_resource_init(resource);
  *
  *   // create a DeferExit object with variable name d
- *   DEFER_N(d) { some_resource_fini(resource); };
+ *   DEFER_(d) { some_resource_fini(resource); };
  *
  *   if (fini_not_needed)
  *    d.release(); // the cleanup does not happen
@@ -421,12 +421,12 @@ DEFERRAL_VISIBILITY_HIDDEN inline DeferSuccess<funcT> operator+(DeferOnSuccess, 
  *  } // close scope
  * @endcode
  *
- * The code in the braces passed to `DEFER_N` executes at the end of the
+ * The code in the braces passed to `DEFER_` executes at the end of the
  * containing scope as if the code is the content of the destructor of an
  * object instantiated at the point of the `defer`, where the destructor
  * reference-captures all local variables it uses.
  *
- * The cleanup code - the code in the braces passed to `DEFER_N` - always
+ * The cleanup code - the code in the braces passed to `DEFER_` - always
  * executes at the end of the scope, regardless of whether the scope exits
  * normally or erroneously as if via the throw statement.
  *
@@ -443,13 +443,13 @@ DEFERRAL_VISIBILITY_HIDDEN inline DeferSuccess<funcT> operator+(DeferOnSuccess, 
  * is skipped, or if the scope does not exit at all such as with std::abort or
  * setcontext, which fibers use.
  */
-#define DEFER_N(x) auto x = ::deferral::internal::DeferOnExit() + [&]()
+#define DEFER_(x) auto x = ::deferral::internal::DeferOnExit() + [&]()
 
 /**
  * @brief Capture code that shall be run when the current scope exits.
  * @def DEFER
  *
- * Like `DEFER_N`, but a variable name is implicitily created.
+ * Like `DEFER_`, but a variable name is implicitily created.
  *
  * Example usage:
  * @code
@@ -492,9 +492,9 @@ DEFERRAL_VISIBILITY_HIDDEN inline DeferSuccess<funcT> operator+(DeferOnSuccess, 
 
 /**
  * Capture code to run if the scope exits with an exception.
- * @def DEFER_FAIL_N
+ * @def DEFER_FAIL_
  *
- * Like `DEFER_N`, but only executes the code if the scope exited due to an
+ * Like `DEFER_`, but only executes the code if the scope exited due to an
  * exception.
  *
  * May be useful in situations where the caller requests a resource where
@@ -506,7 +506,7 @@ DEFERRAL_VISIBILITY_HIDDEN inline DeferSuccess<funcT> operator+(DeferOnSuccess, 
  *   some_resource_init(resource);
  *
  *   // create a DeferFail object with varible name d
- *   DEFER_FAIL_N(d) { some_resource_fini(resource); };
+ *   DEFER_FAIL_(d) { some_resource_fini(resource); };
  *
  *   if (fini_not_needed)
  *     d.release(); // the cleanup does not happen
@@ -519,13 +519,13 @@ DEFERRAL_VISIBILITY_HIDDEN inline DeferSuccess<funcT> operator+(DeferOnSuccess, 
  *
  * @warning Not suitable for coroutine functions.
  */
-#define DEFER_FAIL_N(x) auto x = ::deferral::internal::DeferOnFail() + [&]() noexcept
+#define DEFER_FAIL_(x) auto x = ::deferral::internal::DeferOnFail() + [&]() noexcept
 
 /**
  * @brief Capture code to run if the scope exits with an exception.
  * @def DEFER_FAIL
  *
- * Like `DEFER_FAIL_N`, but a variable name is implicitily created.
+ * Like `DEFER_FAIL_`, but a variable name is implicitily created.
  *
  * Example:
  * @code
@@ -541,20 +541,20 @@ DEFERRAL_VISIBILITY_HIDDEN inline DeferSuccess<funcT> operator+(DeferOnSuccess, 
  * @warning Not suitable for coroutine functions.
  */
 #define DEFER_FAIL                                                                                 \
-  DEFERRAL_MAYBE_UNUSED DEFER_FAIL_N(DEFERRAL_ANONYMOUS_VARIABLE(DEFERRAL_FAIL_STATE))
+  DEFERRAL_MAYBE_UNUSED DEFER_FAIL_(DEFERRAL_ANONYMOUS_VARIABLE(DEFERRAL_FAIL_STATE))
 
 /**
  * @brief Capture code to run on scope exits without an exception.
- * @def DEFER_SUCCESS_N
+ * @def DEFER_SUCCESS_
  *
- * Like `DEFER_N`, but does not execute the code if the scope exited due to an
- * exception. In a sense, the opposite of `DEFER_SUCCESS_N`.
+ * Like `DEFER_`, but does not execute the code if the scope exited due to an
+ * exception. In a sense, the opposite of `DEFER_SUCCESS_`.
  *
  * Example:
  * @code
  * some_resource_t resource;
  * some_resource_init(resource);
- * DEFER_SUCCESS_N(d) {
+ * DEFER_SUCCESS_(d) {
  *   log_success();
  *   some_resource_fini(resource);
  * };
@@ -570,13 +570,13 @@ DEFERRAL_VISIBILITY_HIDDEN inline DeferSuccess<funcT> operator+(DeferOnSuccess, 
  *
  * @warning Not suitable for coroutine functions.
  */
-#define DEFER_SUCCESS_N(x) auto x = ::deferral::internal::DeferOnSuccess() + [&]() noexcept
+#define DEFER_SUCCESS_(x) auto x = ::deferral::internal::DeferOnSuccess() + [&]() noexcept
 
 /**
  * @brief Capture code to run on scope exits without an exception.
  * @def DEFER_SUCCESS
  *
- * Like `DEFER_SUCCESS_N`, but a varibule name is implicitily created.
+ * Like `DEFER_SUCCESS_`, but a varibule name is implicitily created.
  *
  * Example:
  * @code
@@ -596,16 +596,16 @@ DEFERRAL_VISIBILITY_HIDDEN inline DeferSuccess<funcT> operator+(DeferOnSuccess, 
  * @warning Not suitable for coroutine functions.
  */
 #define DEFER_SUCCESS                                                                              \
-  DEFERRAL_MAYBE_UNUSED DEFER_SUCCESS_N(DEFERRAL_ANONYMOUS_VARIABLE(DEFERRAL_SUCCESS_STATE))
+  DEFERRAL_MAYBE_UNUSED DEFER_SUCCESS_(DEFERRAL_ANONYMOUS_VARIABLE(DEFERRAL_SUCCESS_STATE))
 
 #if !defined(DEFERRAL_NO_KEYWORDS)
 
-#define defer_n(x)         DEFER_N(x)
-#define defer              DEFER
-#define defer_fail_n(x)    DEFER_FAIL_N(x)
-#define defer_fail         DEFER_FAIL
-#define defer_success_n(x) DEFER_SUCCESS_N(x)
-#define defer_success      DEFER_SUCCESS
+#define defer_(x)         DEFER_(x)
+#define defer             DEFER
+#define defer_fail_(x)    DEFER_FAIL_(x)
+#define defer_fail        DEFER_FAIL
+#define defer_success_(x) DEFER_SUCCESS_(x)
+#define defer_success     DEFER_SUCCESS
 
 #endif // !defined(DEFERRAL_NO_KEYWORDS)
 #endif // !defined(DEFERRAL_NO_MACROS)

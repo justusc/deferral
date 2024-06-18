@@ -32,7 +32,7 @@ TEST_F(DeferralTest, TestExitThrow) {
 TEST_F(DeferralTest, TestExitRelease) {
   int x = 0;
   {
-    defer_n(d) { x = 1; };
+    defer_(d) { x = 1; };
     d.release();
     EXPECT_EQ(x, 0);
   }
@@ -40,7 +40,7 @@ TEST_F(DeferralTest, TestExitRelease) {
   EXPECT_EQ(x, 0);
 
   {
-    defer_n(d) { x = 1; };
+    defer_(d) { x = 1; };
     EXPECT_EQ(x, 0);
   }
 
@@ -78,8 +78,8 @@ TEST_F(DeferralTest, TestSuccessFailRelease) {
   int x = 0;
   int y = 0;
   {
-    defer_success_n(d) { x = 1; };
-    defer_fail_n(e) { y = 1; };
+    defer_success_(d) { x = 1; };
+    defer_fail_(e) { y = 1; };
 
     d.release();
     e.release();
@@ -91,8 +91,8 @@ TEST_F(DeferralTest, TestSuccessFailRelease) {
   EXPECT_EQ(y, 0);
 
   {
-    defer_success_n(d) { x = 1; };
-    defer_fail_n(e) { y = 1; };
+    defer_success_(d) { x = 1; };
+    defer_fail_(e) { y = 1; };
     EXPECT_EQ(x, 0);
     EXPECT_EQ(y, 0);
   }
@@ -104,8 +104,8 @@ TEST_F(DeferralTest, TestSuccessFailReleaseThrow) {
   int x = 0;
   int y = 0;
   {
-    defer_success_n(d) { x = 1; };
-    defer_fail_n(e) { y = 1; };
+    defer_success_(d) { x = 1; };
+    defer_fail_(e) { y = 1; };
     d.release();
     e.release();
     EXPECT_EQ(x, 0);
@@ -116,8 +116,8 @@ TEST_F(DeferralTest, TestSuccessFailReleaseThrow) {
   EXPECT_EQ(y, 0);
 
   try {
-    defer_success_n(d) { x = 1; };
-    defer_fail_n(e) { y = 1; };
+    defer_success_(d) { x = 1; };
+    defer_fail_(e) { y = 1; };
     throw 0;
     EXPECT_EQ(x, 0);
     EXPECT_EQ(y, 0);

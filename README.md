@@ -136,9 +136,9 @@ void conditionalExample() {
 Deferral provides the `release()` function to disable the deferred operation. To use this
 feature, the deferral object must have a named variable that can be referrenced in the function.
 This can be done using the following:
-  - `defer_n(x)`, `DEFER_N(x)`, `deferral::make_defer_exit()`, `DeferExit{}`
-  - `defer_success_n(x)`, `DEFER_SUCCESS_N(x)`, `deferral::make_defer_exit()`, `DeferExit{}`
-  - `defer_fail_n(x)`, `DEFER_FAIL_N(x)`, `deferral::make_defer_fail()`, `DeferFail{}`
+  - `defer_(x)`, `DEFER_(x)`, `deferral::make_defer_exit()`, `DeferExit{}`
+  - `defer_success_(x)`, `DEFER_SUCCESS_(x)`, `deferral::make_defer_exit()`, `DeferExit{}`
+  - `defer_fail_(x)`, `DEFER_FAIL_(x)`, `deferral::make_defer_fail()`, `DeferFail{}`
 
 The `defer_(success_|fail_|)_n` and `DEFER_(SUCCESS_|FAIL_|)_N` marcros create a variable with the
 name give agrument.
@@ -150,7 +150,7 @@ std::byte* exampleFunction(int n) {
     std::byte* buf = new std::byte[n];
 
     // Ensure buf is cleaned up on early exit
-    defer_n(d) { delete [] buf; }; // Create variable `d`.
+    defer_(d) { delete [] buf; }; // Create variable `d`.
     
     // Perform some initialization that might fail.
 
@@ -314,23 +314,23 @@ make_defer_success(funcT&& f) noexcept(...);
 #if !defined(DEFERRAL_NO_MACROS)
 
 // Macros defining the primary API
-#define DEFER            ...
-#define DEFER_N(x)       ...
-#define DEFER_FAIL       ...
-#define DEFER_FAIL_N(x)  ...
-#define DEFER_SUCCESS    ...
-#define DEFER_SUCCESS(x) ...
+#define DEFER                        ...
+#define DEFER_(variable_name)        ...
+#define DEFER_FAIL                   ...
+#define DEFER_FAIL_(variable_name)   ...
+#define DEFER_SUCCESS                ...
+#define DEFER_SUCCESS(variable_name) ...
 
 
 #if !defined(DEFERRAL_NO_KEYWORDS)
 
 // Define macros that simulate key words
-#define defer_n(x)         DEFER_N(x)
-#define defer              DEFER
-#define defer_fail_n(x)    DEFER_FAIL_N(x)
-#define defer_fail         DEFER_FAIL
-#define defer_success_n(x) DEFER_SUCCESS_N(x)
-#define defer_success      DEFER_SUCCESS
+#define defer_(variable_name)          DEFER_(variable_name)
+#define defer                          DEFER
+#define defer_fail_(variable_name)     DEFER_FAIL_(xvariable_name)
+#define defer_fail                     DEFER_FAIL
+#define defer_success_(variable_name)  DEFER_SUCCESS_(variable_name)
+#define defer_success                  DEFER_SUCCESS
 
 #endif
 
