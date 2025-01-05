@@ -2,9 +2,9 @@
 
 Deferral is a modern C++ library that provides a scope-exit API, inspired by the `defer` statement found in languages like [Go](https://go.dev/blog/defer-panic-and-recover) and [Swift](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/statements/#Defer-Statement), as well as [ScopeGurad](https://youtu.be/WjTrfoiB0MQ) and [`scope_exit` TR v3](https://cplusplus.github.io/fundamentals-ts/v3.html#scopeguard). It enables developers to ensure that specific blocks of code are executed when the current scope ends, either successfully or due to an error, enhancing the management of resource cleanup and exception safety.
 
-While there are numerous implementations already available, Deferral aims to include many of the unique features from other scope guard packages. It also includes a few minor tweeks to the implementation to improve performance. Finally, it provides a `defer` macro to match the syntax of Go and Swift.
+While there are numerous implementations already available, Deferral aims to include many of the unique features from other scope guard packages. It also includes a few minor performance improvements. Finally, it provides a `defer` macro to match the syntax of Go and Swift.
 
-Scope guard / scope exit has been inplemented by many times. See the links below for various implementations.
+Scope guard / scope exit has been implemented many times. See the links below for various implementations.
 
  1. [`scope_exit` reference implementation](https://github.com/PeterSommerlad/SC22WG21_Papers/tree/master/workspace/P0052_scope_exit)
  2. [ScopeGuard in Folly](https://github.com/facebook/folly/blob/main/folly/ScopeGuard.h).
@@ -17,13 +17,13 @@ Scope guard / scope exit has been inplemented by many times. See the links below
 
 Deferral's only requirement is a C++11 compatible compiler.
 
-## Incorperating Deferral in your project
+## Incorporating Deferral in your project
 
 To integrate Deferral into your C++ projects, may choose include the header files from the `/include` directory in your project. Ensure your compiler supports C++11 or later, as this library utilizes modern C++ features and deduction guides for template type inference.
 
 1. Copy the deferral.hh file into your project.
-2. Add the Deferral repo as a submodual or subtree to your project.
-3. CMake `find_project(deferral)`, if deferral is installed on the system
+2. Add the Deferral repo as a submodule or subtree to your project.
+3. CMake `find_package(deferral)`, if deferral is installed on the system
 
 
 Deferral offers three main components: `DeferExit`, `DeferFail`, and `DeferSuccess`. Each of these can be used to execute code at the end of a scope depending on the exit condition:
@@ -39,8 +39,8 @@ Deferral provides four different interfaces:
  - the macros
  - factory functions
  - class constructor (C++17 and later)
-The macros provide the most consise API and is recommended interface. The macros closely resemple
-the syntax of `defer` in other langages and keeps the code clean.
+The macros provide the most concise API and are the recommended interface. The macros closely resemble
+the syntax of `defer` in other languages and keep the code clean.
 
 ### Basic Usage
 
@@ -102,7 +102,7 @@ The simplest usage of Deferral is to unconditionally execute a block of code on 
    }
    ```
 
-### Conditional Execution
+### Conditional Execution On Exception / No Exception
 
 Deferral includes success and failure scope guards that conditionally execute the deferred function
 if an exception is or is not thrown respectively. That is, `defer_success` operation are executed
@@ -131,16 +131,16 @@ void conditionalExample() {
 }
 ```
 
-## Disable Deferral Function
+## User Disabled Defer Functions
 
 Deferral provides the `release()` function to disable the deferred operation. To use this
 feature, the deferral object must have a named variable that can be referrenced in the function.
-This can be done using the following:
-  - `defer_(x)`, `DEFER_(x)`, `deferral::make_defer_exit()`, `DeferExit{}`
-  - `defer_success_(x)`, `DEFER_SUCCESS_(x)`, `deferral::make_defer_exit()`, `DeferExit{}`
-  - `defer_fail_(x)`, `DEFER_FAIL_(x)`, `deferral::make_defer_fail()`, `DeferFail{}`
+This can be done with any of the following APIs:
+  - on exit: `defer_(x)`, `DEFER_(x)`, `deferral::make_defer_exit()`, `DeferExit{}`
+  - on success: `defer_success_(x)`, `DEFER_SUCCESS_(x)`, `deferral::make_defer_exit()`, `DeferExit{}`
+  - on failure: `defer_fail_(x)`, `DEFER_FAIL_(x)`, `deferral::make_defer_fail()`, `DeferFail{}`
 
-The `defer_(success_|fail_|)_n` and `DEFER_(SUCCESS_|FAIL_|)_N` marcros create a variable with the
+The `defer_(success_|fail_|)_` and `DEFER_(SUCCESS_|FAIL_|)_` marcros create a variable with the
 name give agrument.
 
 ```cpp
@@ -201,7 +201,7 @@ std::byte* exampleFunction(int n) {
 
 ## Disable Macros and Keywords
 
-You can disable macro genration in the code using the following macro definitions either as command line arguments or in-file macro definitions.
+You can disable macro generation in the code using the following macro definitions either as command line arguments or in-file macro definitions.
 
 ### Disable Macros and Keywords
 
@@ -348,7 +348,7 @@ This library is distributed under the MIT License. Feel free to use it in your p
 
 > MIT License
 >
-> Copyright (c) [year] [fullname]
+> Copyright (c) 2024 Justus Calvin
 > 
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 > of this software and associated documentation files (the "Software"), to deal

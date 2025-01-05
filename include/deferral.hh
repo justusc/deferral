@@ -241,7 +241,7 @@ public:
 
 } // namespace internal
 
-// Add explicit classes for deduction guides 9if C++17 is available).
+// Add explicit classes for deduction guides (if C++17 is available).
 
 /**
  * @class DeferExit
