@@ -338,6 +338,57 @@ make_defer_success(funcT&& f) noexcept(...);
 
 ```
 
+# Customizing Deferral for Your Project
+
+Deferral defines two sets of macros. One you upper case definitions, and the other uses lower case
+macro definitions to mimic key words. If you want or need to define custom macros for deferrals, you
+can do so with the following code. Just copy either of the following code snippets into your project,
+and modify them to suit your needs.
+
+Example of defer macros with the prefix `XYZ_` added.
+
+```c++
+// Include Deferral without macro or keyword definitions.
+#define DEFERRAL_NO_MACROS
+#include <deferral.hh>
+
+// Deifne defer macros
+
+#define XYZ_DEFER_(x) auto x = ::deferral::internal::DeferOnExit() + [&]()
+
+#define XYZ_DEFER  \
+  auto DEFERRAL_ANONYMOUS_VARIABLE(DEFERRAL_STATE) =  \
+      ::deferral::internal::DeferOnExitNoCheck() + [&]()
+
+#define XYZ_DEFER_FAIL_(x) auto x = ::deferral::internal::DeferOnFail() + [&]() noexcept
+
+#define XYZ_DEFER_FAIL  \
+  DEFERRAL_MAYBE_UNUSED XYZ_DEFER_FAIL_(DEFERRAL_ANONYMOUS_VARIABLE(DEFERRAL_FAIL_STATE))
+
+#define XYZ_DEFER_SUCCESS_(x) auto x = ::deferral::internal::DeferOnSuccess() + [&]() noexcept
+
+#define XYZ_DEFER_SUCCESS  \
+  DEFERRAL_MAYBE_UNUSED XYZ_DEFER_SUCCESS_(DEFERRAL_ANONYMOUS_VARIABLE(DEFERRAL_SUCCESS_STATE))
+```
+
+This example removes the keyword macros defined by Deferral and defines custom key words using
+Deferral's macro definitions.
+
+```c++
+// Include Deferral without keyword definitions.
+#define DEFERRAL_NO_KEYWORDS
+#include <deferral.hh>
+
+// Define defer keywords
+
+#define xyz_defer_(x)         DEFER_(x)
+#define xyz_defer             DEFER
+#define xyz_defer_fail_(x)    DEFER_FAIL_(x)
+#define xyz_defer_fail        DEFER_FAIL
+#define xyz_defer_success_(x) DEFER_SUCCESS_(x)
+#define xyz_defer_success     DEFER_SUCCESS
+```
+
 # Contributing
 
 We welcome contributions to the Deferral library! Whether it's bug reports, feature requests, or pull requests, your help is valuable to us. Please feel free to contribute to making this library even better.
